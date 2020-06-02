@@ -184,11 +184,12 @@ float traceRef(vec3 ro, vec3 rd){
     	vec3 p = ro + rd*dO;
         float dS = GetDist(p);
         dO += dS;
-        if(dO>MAX_DIST || dS<SURF_DIST) break;
+        if(dO>MAX_DIST*100.0 || dS<SURF_DIST*1.0) break;
     }
     
     return dO;
 }
+
 
 vec3 getRayDirection(vec2 resolution, vec2 uv)
 {
@@ -250,7 +251,7 @@ void fragment()
 	float ref = t * -1.0 + 2.0;//traceRef(ro, rd);
 	
     col = pow(col, vec3(.4545));	// gamma correction
-    col = (col * vec3(ref)) / vec3(1);
+    col = ((col*1.0) * vec3(ref*1.0)) / vec3(1);
     //col = vec3(ref);
     COLOR = vec4(col,1.0);
 }
