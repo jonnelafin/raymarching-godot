@@ -5,12 +5,13 @@
 [ext_resource path="res://RayMarching/FovSlider.gd" type="Script" id=3]
 [ext_resource path="res://RayMarching/shaders/RayMarching_main.shader" type="Shader" id=4]
 
-[sub_resource type="ShaderMaterial" id=2]
+[sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 4 )
 shader_param/MAX_STEPS = 100
 shader_param/MAX_DIST = 100.0
 shader_param/SURF_DIST = 0.001
 shader_param/iTime = 0.581
+shader_param/bg = 3.282
 shader_param/fov = 45.035
 shader_param/cameraPos = Vector3( -8.548, 2, 8.779 )
 shader_param/front = Vector3( 1, 0, 0 )
@@ -24,7 +25,7 @@ anchor_bottom = 1.0
 rect_rotation = -0.042723
 
 [node name="ColorRect" type="ColorRect" parent="Control"]
-material = SubResource( 2 )
+material = SubResource( 1 )
 anchor_right = 1.082
 anchor_bottom = 0.903
 margin_right = -83.968

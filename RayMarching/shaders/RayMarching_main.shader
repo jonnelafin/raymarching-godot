@@ -9,11 +9,16 @@ uniform int MAX_STEPS = 100;
 uniform float MAX_DIST = 100;
 uniform float SURF_DIST = .001;
 uniform float iTime;
+uniform float bg = 0.;
 
 uniform float fov = 45.0;
 uniform vec3 cameraPos = vec3(-5.0, 0.0, 0.0);
 uniform vec3 front = vec3(1.0, 0.0, 0.0);
 uniform vec3 up = vec3(0.0, 1.0, 0.0);
+
+
+
+//uniform float float_arr[3] = float[3] (1.0, 0.5, 0.0); // first constructor
 
 float dot2( in vec3 v ) { return dot(v,v); }
 
@@ -107,7 +112,14 @@ float RayMarch(vec3 ro, vec3 rd) {
     	vec3 p = ro + rd*dO;
         float dS = GetDist(p);
         dO += dS;
-        if(dO>MAX_DIST || dS<SURF_DIST) break;
+        if(dS<SURF_DIST)
+		{ 
+			break;
+		}
+		if(dO>MAX_DIST)
+		{
+			break;
+		}
     }
     
     return dO;
@@ -175,19 +187,65 @@ float GetLight(vec3 p) {
     
     return dif;
 }
-
-//from https://www.shadertoy.com/view/4dt3zn
-float traceRef(vec3 ro, vec3 rd){
+float traceRef3(vec3 ro, vec3 rd){
 	float dO=0.;
-    
+    vec3 last;
     for(int i=0; i<MAX_STEPS*100; i++) {
     	vec3 p = ro + rd*dO;
         float dS = GetDist(p);
         dO += dS;
+		last = p;
         if(dO>MAX_DIST*100.0 || dS<SURF_DIST*1.0) break;
     }
-    
+    return GetLight(last);
     return dO;
+}
+float traceRef2(vec3 ro, vec3 rd){
+	float dO=0.;
+    vec3 last;
+    for(int i=0; i<MAX_STEPS*100; i++) {
+    	vec3 p = ro + rd*dO;
+        float dS = GetDist(p);
+        dO += dS;
+		last = p;
+        if(dO>MAX_DIST*100.0 || dS<SURF_DIST*1.0) break;
+    }
+    float ref = 0.;
+	if(dO < MAX_DIST * 100.0){
+	    vec3 sn = GetNormal(last);
+	    rd = reflect(rd, sn);
+	    float t = traceRef3(ro +  sn*.003, rd);
+		ref = t;
+		if(ref < 0.){
+			ref = 0.;
+		}
+		ref = ref * -1.0 + 2.;//traceRef(ro, rd);
+	}
+    return ref;
+}
+//from https://www.shadertoy.com/view/4dt3zn
+float traceRef(vec3 ro, vec3 rd){
+	float dO=0.;
+    vec3 last;
+    for(int i=0; i<MAX_STEPS*100; i++) {
+    	vec3 p = ro + rd*dO;
+        float dS = GetDist(p);
+        dO += dS;
+		last = p;
+        if(dO>MAX_DIST*100.0 || dS<SURF_DIST*1.0) break;
+    }
+    float ref = 0.;
+	if(dO < MAX_DIST * 100.0){
+	    vec3 sn = GetNormal(last);
+	    rd = reflect(rd, sn);
+	    float t = traceRef3(ro +  sn*.003, rd);
+		ref = t;
+		if(ref < 0.){
+			ref = 0.;
+		}
+		ref = ref * -1.0 + 2.;//traceRef(ro, rd);
+	}
+    return ref;
 }
 
 
