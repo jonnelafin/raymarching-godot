@@ -10,12 +10,17 @@ shader = ExtResource( 4 )
 shader_param/MAX_STEPS = 100
 shader_param/MAX_DIST = 100.0
 shader_param/SURF_DIST = 0.001
-shader_param/iTime = 0.581
+shader_param/iTime = -6.243
 shader_param/bg = 3.282
 shader_param/fov = 45.035
 shader_param/cameraPos = Vector3( -8.548, 2, 8.779 )
 shader_param/front = Vector3( 1, 0, 0 )
 shader_param/up = Vector3( 0, 1, 0 )
+shader_param/editIndex = 0
+shader_param/digesting = false
+shader_param/ready = false
+shader_param/start = false
+shader_param/input = null
 
 [node name="Node" type="Node"]
 

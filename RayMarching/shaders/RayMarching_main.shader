@@ -18,7 +18,18 @@ uniform vec3 up = vec3(0.0, 1.0, 0.0);
 
 
 
-//uniform float float_arr[3] = float[3] (1.0, 0.5, 0.0); // first constructor
+//varying float float_arr[3] = float[3] (1.0, 0.5, 0.0); // first constructor
+varying vec3 items[500];
+uniform int editIndex = 0;
+uniform bool digesting = false;
+uniform bool ready = false;
+uniform bool start = false;
+uniform vec3 input;
+
+
+void updateData(){
+	
+}
 
 float dot2( in vec3 v ) { return dot(v,v); }
 
@@ -173,9 +184,9 @@ float softShadow(vec3 ro, vec3 lp, float k){
     return min(max(shade, 0.) + .25, 1.); 
 }
 
-float GetLight(vec3 p) {
-    vec3 lightPos = vec3(0, 5, 6);
-    lightPos.xz += vec2(sin(iTime), cos(iTime))*2.;
+float GetLight(vec3 p, vec3 lightPos) {
+    //vec3 lightPos = vec3(0, 5, 6);
+    //lightPos.xz += vec2(sin(iTime), cos(iTime))*2.;
     vec3 l = normalize(lightPos-p);
     vec3 n = GetNormal(p);
     
@@ -197,7 +208,7 @@ float traceRef3(vec3 ro, vec3 rd){
 		last = p;
         if(dO>MAX_DIST*100.0 || dS<SURF_DIST*1.0) break;
     }
-    return GetLight(last);
+    return GetLight(last, vec3(0,0,0));
     return dO;
 }
 float traceRef2(vec3 ro, vec3 rd){
@@ -285,15 +296,17 @@ void fragment()
     
 	
     vec3 lightPos = vec3(0, 5, 6);
+	vec3 lightPos2 = vec3(-10, 5, -6);
     lightPos.xz += vec2(sin(iTime), cos(iTime))*2.;
 	
 	//Soft shadows
-    float sh = softShadow(ro +  sn*.0015, lightPos, 16.);
+    //float sh = softShadow(ro +  sn*.0015, lightPos, 16.);
 	
     vec3 p = ro + rd * d;
     
-    float dif = GetLight(p);
-    col = vec3(dif);
+    float dif = GetLight(p, lightPos);
+	float dif2 = GetLight(p, lightPos2);
+    col = vec3(dif + dif2);
 	
 	//Reflections
     float t = d;//traceRef(ro +  sn*.003, rd);
@@ -305,11 +318,11 @@ void fragment()
      sn = GetNormal(ro);
 	
     rd = reflect(rd, sn);
-    t = traceRef(ro +  sn*.003, rd);
-	float ref = t * -1.0 + 2.0;//traceRef(ro, rd);
+    //t = traceRef(ro +  sn*.003, rd);
+	//float ref = t * -1.0 + 2.0;//traceRef(ro, rd);
 	
     col = pow(col, vec3(.4545));	// gamma correction
-    col = ((col*1.0) * vec3(ref*1.0)) / vec3(1);
+    //col = ((col*1.0) * vec3(ref*1.0)) / vec3(1);
     //col = vec3(ref);
     COLOR = vec4(col,1.0);
 }
