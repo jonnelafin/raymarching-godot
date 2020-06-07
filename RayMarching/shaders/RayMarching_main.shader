@@ -27,9 +27,31 @@ uniform bool start = false;
 uniform vec3 input;
 
 
-void updateData(){
-	
-}
+//Items
+//t:
+//	0 = do not render
+//	1 = box
+//	2 = donut
+//Item 1
+uniform int item1_t = 1;
+uniform vec3 item1_loc = vec3(0, -1, 0);
+uniform vec3 item1_scale = vec3(10,1,10);
+//Item 2
+uniform int item2_t = 0;
+uniform vec3 item2_loc;
+uniform vec3 item2_scale;
+//Item 3
+uniform int item3_t = 0;
+uniform vec3 item3_loc;
+uniform vec3 item3_scale;
+//Item 4
+uniform int item4_t = 0;
+uniform vec3 item4_loc;
+uniform vec3 item4_scale;
+//Item 5
+uniform int item5_t = 0;
+uniform vec3 item5_loc;
+uniform vec3 item5_scale;
 
 float dot2( in vec3 v ) { return dot(v,v); }
 
@@ -95,6 +117,7 @@ float udQuad( vec3 p, vec3 a, vec3 b, vec3 c, vec3 d )
 }
 
 float GetDist(vec3 p) {
+    
 	vec4 s = vec4(0, 1, 6, 1);
     
     float sphereDist =  length(p-s.xyz)-s.w;
@@ -106,13 +129,24 @@ float GetDist(vec3 p) {
     float bd = dBox(p-vec3(-3.5, 1, 6), vec3(1,.75,1));
     float cyld = sdCylinder(p, vec3(0, .3, 3), vec3(3, .3, 5), .3);
     
-	float d = MAX_DIST;
-    d = min(cd, planeDist);
-    d = min(d, td);
-    d = min(d, bd);
-    
-    d = min(d, cyld);
-    
+	float d = 100000000000000.;
+	d = min(d, planeDist);
+    //d = min(d, td);
+    //d = min(d, bd);
+	
+	//Items
+	int t_arr[5] = int[5] (item1_t, item2_t, item3_t, item4_t, item5_t); 
+    vec3 loc_arr[5] = vec3[5] (item1_loc, item2_loc, item3_loc, item4_loc, item5_loc);
+    vec3 scale_arr[5] = vec3[5] (item1_scale, item2_scale, item3_scale, item4_scale, item5_scale);
+	for(int i = 0; i < 5; i++){
+		int type = t_arr[i];
+		vec3 loc = loc_arr[i];
+		vec3 scale = scale_arr[i];
+		if(type == 1){
+			d = min(dBox(p-loc, scale), d);
+		}
+	}
+	
     return d;
 }
 

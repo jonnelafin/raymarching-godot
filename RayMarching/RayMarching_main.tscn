@@ -21,6 +21,21 @@ shader_param/digesting = false
 shader_param/ready = false
 shader_param/start = false
 shader_param/input = null
+shader_param/item1_t = 0
+shader_param/item1_loc = Vector3( 0, -1, 0 )
+shader_param/item1_scale = Vector3( 10, 1, 10 )
+shader_param/item2_t = 0
+shader_param/item2_loc = null
+shader_param/item2_scale = null
+shader_param/item3_t = 0
+shader_param/item3_loc = null
+shader_param/item3_scale = null
+shader_param/item4_t = 0
+shader_param/item4_loc = null
+shader_param/item4_scale = null
+shader_param/item5_t = 0
+shader_param/item5_loc = null
+shader_param/item5_scale = null
 
 [node name="Node" type="Node"]
 
