@@ -172,6 +172,26 @@ float RayMarch(vec3 ro, vec3 rd) {
     return dO;
 }
 
+float DepthFilter(vec3 ro, vec3 rd) {
+	float dO=0.;
+    
+    for(int i=0; i<MAX_STEPS; i++) {
+    	vec3 p = ro + rd*dO;
+        float dS = GetDist(p);
+        dO += dS;
+        if(dS<SURF_DIST)
+		{ 
+			return 1.0;
+		}
+		if(dO>MAX_DIST)
+		{
+			break;
+		}
+    }
+    
+    return 0.0;
+}
+
 vec3 GetNormal(vec3 p) {
 	float d = GetDist(p);
     vec2 e = vec2(.001, 0);
@@ -328,6 +348,7 @@ void fragment()
     vec3 rd = normalize(vec3(uv.x-.15, uv.y-.2, 1));
 	rd = getRayDirection(resolution, UV);
     float d = RayMarch(ro, rd);
+    float depthFilter = DepthFilter(ro, rd);
     vec3 sn = GetNormal(ro);
     
 	
@@ -358,7 +379,7 @@ void fragment()
 	float ref = traceRef(ro +  sn*.003, rd);//traceRef(ro, rd)/2.0; //t * -1.0 + 2.0;
 	
     col = pow(col, vec3(.4545));	// gamma correction
-    col = ((col*1.0) + vec3(ref*1.0)) / vec3(2);
-    //col = vec3(ref);
+    col = ((col*1.0) + vec3(ref*1.0*depthFilter)) / vec3(2);
+    //col = vec3(depthFilter);
     COLOR = vec4(col,1.0);
 }
