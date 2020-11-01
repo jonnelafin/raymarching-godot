@@ -16,8 +16,12 @@ _global_script_class_icons={
 [application]
 
 config/name="RayMarcher"
-run/main_scene="res://RayMarching/RayMarching_main.tscn"
+run/main_scene="res://New/Scenes/Main/Main_FX.tscn"
 config/icon="res://icon.png"
+
+[display]
+
+window/stretch/mode="viewport"
 
 [input]
 

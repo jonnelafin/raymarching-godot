@@ -23,12 +23,22 @@ func _process(delta):
 	var ind = 1
 	for i in controlGroup.get_children():
 		if i.visible:
-			var na = "item" + str(ind)
-			tracer.set_shader_param(na + "_t", 1)
-			tracer.set_shader_param(na + "_loc", i.global_transform.origin)
-			tracer.set_shader_param(na + "_scale", i.scale)
-#			print("object #" + str(ind) + " set")
-			ind += 1
-			ind = ind % max_objs
-	t += 1
+			if i.get_class() == "CSGBox":
+				var na = "item" + str(ind)
+				tracer.set_shader_param(na + "_t", 1)
+				tracer.set_shader_param(na + "_loc", i.global_transform.origin)
+				tracer.set_shader_param(na + "_scale", i.scale)
+	#			print("object #" + str(ind) + " set")
+				ind += 1
+				ind = ind % max_objs
+				t += 1
+			elif i.get_class() == "CSGSphere":
+				var na = "item" + str(ind)
+				tracer.set_shader_param(na + "_t", 1)
+				tracer.set_shader_param(na + "_loc", i.global_transform.origin)
+				tracer.set_shader_param(na + "_scale", i.scale)
+	#			print("object #" + str(ind) + " set")
+				ind += 1
+				ind = ind % max_objs
+				t += 1
 #	tracer.set_shader_param("cameraPos", player.global_transform.origin)

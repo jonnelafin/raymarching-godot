@@ -1,8 +1,10 @@
 // "ShaderToy Tutorial - Ray Marching Primitives" 
 // by Martijn Steinrucken aka BigWings/CountFrolic - 2018
-// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 //
 // Modified by Elias Eskelinen aka Jonnelafin - 2020
+//
+// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+//
 shader_type canvas_item;
 uniform int MAX_STEPS = 100;
 uniform float MAX_DIST = 100;
@@ -30,7 +32,8 @@ uniform vec3 input;
 //t:
 //	0 = do not render
 //	1 = box
-//	2 = donut
+//	2 = sphere
+//	3 = donut
 //Item 1
 uniform int item1_t = 1;
 uniform vec3 item1_loc = vec3(0, 0, 0);
@@ -130,7 +133,7 @@ float GetDist(vec3 p) {
     
 	float d = 100000000000000.;
 	//d = min(d, planeDist);
-    //d = min(d, td);
+    d = min(d, cd);
     //d = min(d, bd);
 	
 	//Items
@@ -352,10 +355,10 @@ void fragment()
 	
     rd = reflect(rd, sn);
     //t = traceRef(ro +  sn*.003, rd);
-	//float ref = t * -1.0 + 2.0;//traceRef(ro, rd);
+	float ref = traceRef(ro +  sn*.003, rd);//traceRef(ro, rd)/2.0; //t * -1.0 + 2.0;
 	
     col = pow(col, vec3(.4545));	// gamma correction
-    //col = ((col*1.0) * vec3(ref*1.0)) / vec3(1);
+    col = ((col*1.0) + vec3(ref*1.0)) / vec3(2);
     //col = vec3(ref);
     COLOR = vec4(col,1.0);
 }
