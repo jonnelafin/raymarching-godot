@@ -6,8 +6,8 @@
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 //
 shader_type canvas_item;
-uniform int MAX_STEPS = 100;
-uniform float MAX_DIST = 100;
+uniform int MAX_STEPS = 200;
+uniform float MAX_DIST = 200;
 uniform float SURF_DIST = .001;
 uniform float iTime;
 uniform float bg = 0.;
@@ -171,11 +171,31 @@ float RayMarch(vec3 ro, vec3 rd) {
     
     return dO;
 }
-
+uniform float lightFidelityMult = 1.0;
+float RayMarch_l(vec3 ro, vec3 rd) {
+	float dO=0.;
+    
+    for(int i=0; i<MAX_STEPS*int(lightFidelityMult); i++) {
+    	vec3 p = ro + rd*dO;
+        float dS = GetDist(p);
+        dO += dS;
+        if(dS<SURF_DIST)
+		{ 
+			break;
+		}
+		if(dO>MAX_DIST*lightFidelityMult)
+		{
+			break;
+		}
+    }
+    
+    return dO;
+}
+uniform float depthFilterMult = 1.0;
 float DepthFilter(vec3 ro, vec3 rd) {
 	float dO=0.;
     
-    for(int i=0; i<MAX_STEPS; i++) {
+    for(int i=0; i<MAX_STEPS*int(depthFilterMult); i++) {
     	vec3 p = ro + rd*dO;
         float dS = GetDist(p);
         dO += dS;
@@ -183,7 +203,7 @@ float DepthFilter(vec3 ro, vec3 rd) {
 		{ 
 			return 1.0;
 		}
-		if(dO>MAX_DIST)
+		if(dO>MAX_DIST*depthFilterMult)
 		{
 			break;
 		}
@@ -191,10 +211,10 @@ float DepthFilter(vec3 ro, vec3 rd) {
     
     return 0.0;
 }
-
+uniform float vecMult = 1.0;
 vec3 GetNormal(vec3 p) {
 	float d = GetDist(p);
-    vec2 e = vec2(.001, 0);
+    vec2 e = vec2(.001*vecMult, 0);
     
     vec3 n = d - vec3(
         GetDist(p-e.xyy),
@@ -247,7 +267,7 @@ float GetLight(vec3 p, vec3 lightPos) {
     vec3 n = GetNormal(p);
     
     float dif = clamp(dot(n, l), 0., 1.);
-    float d = RayMarch(p+n*SURF_DIST*2., l);
+    float d = RayMarch_l(p+n*SURF_DIST*2., l);
     //if(d<length(lightPos-p)) dif *= .1;
     if(d<length(lightPos-p)) dif *= .1;
 	//dif *= d-length(lightPos-p)*0.3;
@@ -310,7 +330,7 @@ float traceRef(vec3 ro, vec3 rd){
 		if(ref < 0.){
 			ref = 0.;
 		}
-		ref = ref * -1.0 + 2.;//traceRef(ro, rd);
+		//ref = ref * -1.0 + 2.;//traceRef(ro, rd);
 	}
     return ref;
 }
@@ -377,11 +397,17 @@ void fragment()
     rd = reflect(rd, sn);
     //t = traceRef(ro +  sn*.003, rd);
 	float ref = traceRef(ro +  sn*.003, rd);//traceRef(ro, rd)/2.0; //t * -1.0 + 2.0;
-	float ref_dif = GetLight(sn, lightPos);
+	ro += rd*t;
+    sn = GetNormal(ro);
+	float ref_dif = GetLight(ro +  sn*.003, lightPos);
+	float ref_dif2 = GetLight(ro +  sn*.003, lightPos2);
+    vec3 ref_col = vec3(ref_dif + ref_dif2)*vec3(depthFilter);
+	ref_col = pow(ref_col, vec3(.4545));	// gamma correction
 	
     col = pow(col, vec3(.4545));	// gamma correction
-    col = ((col*1.0) + vec3(ref*1.0*depthFilter*ref_dif)) / vec3(2);
+	
+    col = ((col*1.0) + vec3(ref*1.0*ref_col)) / vec3(2);
     //col = vec3(depthFilter);
-	col = vec3(ref_dif);
+//	col = ref_col;
     COLOR = vec4(col,1.0);
 }

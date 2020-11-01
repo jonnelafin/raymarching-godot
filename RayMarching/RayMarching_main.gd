@@ -19,7 +19,7 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 var t = 0
 func _process(delta):
-	$Objects/CSGBox.translation = Vector3(0, sin(t/100.0), 0)
+	#$Objects/CSGBox.translation = Vector3(0, sin(t/100.0), 0)
 	var ind = 1
 	for i in controlGroup.get_children():
 		if i.visible:
