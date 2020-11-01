@@ -1,15 +1,16 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://RayMarching/ColorRect.gd" type="Script" id=1]
 [ext_resource path="res://RayMarching/CameraMovement.gd" type="Script" id=2]
 [ext_resource path="res://RayMarching/FovSlider.gd" type="Script" id=3]
 [ext_resource path="res://RayMarching/shaders/RayMarching_main.shader" type="Shader" id=4]
+[ext_resource path="res://RayMarching/RayMarching_main.gd" type="Script" id=5]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 4 )
-shader_param/MAX_STEPS = 100
-shader_param/MAX_DIST = 100.0
-shader_param/SURF_DIST = 0.001
+shader_param/MAX_STEPS = 200
+shader_param/MAX_DIST = 200.0
+shader_param/SURF_DIST = 0.1
 shader_param/iTime = -6.243
 shader_param/bg = 3.282
 shader_param/fov = 45.035
@@ -21,12 +22,12 @@ shader_param/digesting = false
 shader_param/ready = false
 shader_param/start = false
 shader_param/input = null
-shader_param/item1_t = 0
-shader_param/item1_loc = Vector3( 0, -1, 0 )
-shader_param/item1_scale = Vector3( 10, 1, 10 )
+shader_param/item1_t = 1
+shader_param/item1_loc = Vector3( 0, 0, 0 )
+shader_param/item1_scale = Vector3( 1, 1, 1 )
 shader_param/item2_t = 0
-shader_param/item2_loc = null
-shader_param/item2_scale = null
+shader_param/item2_loc = Vector3( 0, 2.132, 0 )
+shader_param/item2_scale = Vector3( 1, 1, 1 )
 shader_param/item3_t = 0
 shader_param/item3_loc = null
 shader_param/item3_scale = null
@@ -37,7 +38,8 @@ shader_param/item5_t = 0
 shader_param/item5_loc = null
 shader_param/item5_scale = null
 
-[node name="Node" type="Node"]
+[node name="Manager" type="Node"]
+script = ExtResource( 5 )
 
 [node name="Control" type="Control" parent="."]
 anchor_right = 1.0
@@ -75,4 +77,24 @@ value = 45.0
 tick_count = 10
 ticks_on_borders = true
 script = ExtResource( 3 )
-colorRect = NodePath("../../ColorRect")
+__meta__ = {
+"_edit_use_anchors_": false
+}
+colorRect = NodePath("../../../../Manager/Control/ColorRect")
+
+[node name="Objects" type="Spatial" parent="."]
+
+[node name="CSGBox" type="CSGBox" parent="Objects"]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
+use_collision = true
+
+[node name="CSGBox2" type="CSGBox" parent="Objects"]
+transform = Transform( 100, 0, 0, 0, 1, 0, 0, 0, 100, 0, -3, 0 )
+
+[node name="CSGBox3" type="CSGBox" parent="Objects"]
+transform = Transform( 2, 0, 0, 0, 5, 0, 0, 0, 2, 0, 16, 0 )
+
+[node name="CSGBox4" type="CSGBox" parent="Objects"]
+transform = Transform( 7, 0, 0, 0, 60, 0, 0, 0, 7, 0, 81, 0 )
+
+[node name="Player" type="Spatial" parent="."]

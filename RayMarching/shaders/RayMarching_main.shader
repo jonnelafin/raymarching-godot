@@ -2,8 +2,7 @@
 // by Martijn Steinrucken aka BigWings/CountFrolic - 2018
 // License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
 //
-// This shader is part of a tutorial on YouTube
-// https://youtu.be/Ff0jJyyiVyw
+// Modified by Elias Eskelinen aka Jonnelafin - 2020
 shader_type canvas_item;
 uniform int MAX_STEPS = 100;
 uniform float MAX_DIST = 100;
@@ -34,12 +33,12 @@ uniform vec3 input;
 //	2 = donut
 //Item 1
 uniform int item1_t = 1;
-uniform vec3 item1_loc = vec3(0, -1, 0);
-uniform vec3 item1_scale = vec3(10,1,10);
+uniform vec3 item1_loc = vec3(0, 0, 0);
+uniform vec3 item1_scale = vec3(1,10,1);
 //Item 2
 uniform int item2_t = 0;
-uniform vec3 item2_loc;
-uniform vec3 item2_scale;
+uniform vec3 item2_loc = vec3(0, 0, 0);
+uniform vec3 item2_scale = vec3(1,1,1);
 //Item 3
 uniform int item3_t = 0;
 uniform vec3 item3_loc;
@@ -122,7 +121,7 @@ float GetDist(vec3 p) {
     
     float sphereDist =  length(p-s.xyz)-s.w;
     float planeDist = p.y;
-	planeDist = dBox(p-vec3(0, -1, 0), vec3(10,1,10));
+	planeDist = dBox(p-vec3(0, -2, 0), vec3(10,1,10));
     
     float cd = sdCapsule(p, vec3(3, .5, 6), vec3(3, 2.5, 6), .5); 
     float td = sdTorus(p-vec3(0,.5,6), vec2(1.5, .4));
@@ -130,7 +129,7 @@ float GetDist(vec3 p) {
     float cyld = sdCylinder(p, vec3(0, .3, 3), vec3(3, .3, 5), .3);
     
 	float d = 100000000000000.;
-	d = min(d, planeDist);
+	//d = min(d, planeDist);
     //d = min(d, td);
     //d = min(d, bd);
 	
@@ -143,7 +142,7 @@ float GetDist(vec3 p) {
 		vec3 loc = loc_arr[i];
 		vec3 scale = scale_arr[i];
 		if(type == 1){
-			d = min(dBox(p-loc, scale), d);
+			d = min(d, dBox(p-loc, scale));
 		}
 	}
 	

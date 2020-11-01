@@ -1,11 +1,16 @@
-extends Node
+extends KinematicBody
+
 
 export(float) var MOUSE_SENSITIVITY = 0.05
 export(float) var MAX_VELOCITY = 300
 
 var velocity: Vector3 = Vector3()
 var mouseOffsets: Vector2 = Vector2()
+#
+var Position: Vector3 = Vector3()
+#
 
+onready var CameraPos = $CameraPos
 
 func compute_direction(pitchRad, yawRad):
 	return Vector3(
@@ -58,7 +63,11 @@ func update_camera_position(delta):
 	var curPos = colorRect.material.get_shader_param("cameraPos")
 	var newPos = curPos + self.velocity * delta
 	colorRect.material.set_shader_param("cameraPos", newPos)
-
+# Replacement for update_camera_position()
+func update_pos(delta):
+#	move_and_slide(velocity)
+	Position = Position + self.velocity * delta
+	translation = Position
 
 func _ready():
 	# we want to lock the mouse cursor at the start of the app
@@ -66,7 +75,7 @@ func _ready():
 	
 
 func _input(event):
-#	pass
+	pass
 	# update camera's front vector
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		mouseOffsets += event.relative * MOUSE_SENSITIVITY
@@ -77,8 +86,8 @@ func _input(event):
 			deg2rad(mouseOffsets.x)
 		)
 
-		var colorRect = get_parent()
-		colorRect.material.set_shader_param("front", newDirection)
+#		var colorRect = get_parent()
+#		colorRect.material.set_shader_param("front", newDirection)
 	
 	# lock/unlock mouse cursor
 	if event.is_action_pressed("ui_cancel"):
@@ -89,6 +98,5 @@ func _input(event):
 
 
 func _physics_process(delta):
-#	pass
 	update_velocity(delta)
-	update_camera_position(delta)
+#	update_camera_position(delta)
