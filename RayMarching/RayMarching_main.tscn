@@ -40,6 +40,7 @@ shader_param/item5_scale = null
 shader_param/lightFidelityMult = 1.0
 shader_param/depthFilterMult = 1.0
 shader_param/vecMult = 1.0
+shader_param/reflectionMult = 1.0
 
 [node name="Manager" type="Node"]
 script = ExtResource( 5 )

@@ -289,8 +289,8 @@ float traceRef3(vec3 ro, vec3 rd){
 		last = p;
         if(dO>MAX_DIST*100.0 || dS<SURF_DIST*1.0) break;
     }
-    return GetLight(last, vec3(0,0,0));
-    return dO;
+    //return GetLight(last, vec3(0,0,0));
+    return 1.0-dO;
 }
 float traceRef2(vec3 ro, vec3 rd){
 	float dO=0.;
@@ -316,15 +316,16 @@ float traceRef2(vec3 ro, vec3 rd){
     return ref;
 }
 //from https://www.shadertoy.com/view/4dt3zn
+uniform float reflectionMult = 100.0;
 float traceRef(vec3 ro, vec3 rd){
 	float dO=0.;
     vec3 last;
-    for(int i=0; i<MAX_STEPS*100; i++) {
+    for(int i=0; i<MAX_STEPS*int(reflectionMult); i++) {
     	vec3 p = ro + rd*dO;
         float dS = GetDist(p);
         dO += dS;
 		last = p;
-        if(dO>MAX_DIST*100.0 || dS<SURF_DIST*1.0) break;
+        if(dO>MAX_DIST*reflectionMult || dS<SURF_DIST*1.0) break;
     }
     float ref = 0.;
 	if(dO < MAX_DIST * 100.0){
@@ -416,5 +417,6 @@ void fragment()
 //	col = ref_col;
 //	col = pow(col, vec3(.4545));	// gamma correction
 //	col = vec3(ref)*ref_col*vec3(10.0);
+	col = vec3(ref);
     COLOR = vec4(col,1.0);
 }
