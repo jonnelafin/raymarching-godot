@@ -377,9 +377,11 @@ void fragment()
     rd = reflect(rd, sn);
     //t = traceRef(ro +  sn*.003, rd);
 	float ref = traceRef(ro +  sn*.003, rd);//traceRef(ro, rd)/2.0; //t * -1.0 + 2.0;
+	float ref_dif = GetLight(sn, lightPos);
 	
     col = pow(col, vec3(.4545));	// gamma correction
-    col = ((col*1.0) + vec3(ref*1.0*depthFilter)) / vec3(2);
+    col = ((col*1.0) + vec3(ref*1.0*depthFilter*ref_dif)) / vec3(2);
     //col = vec3(depthFilter);
+	col = vec3(ref_dif);
     COLOR = vec4(col,1.0);
 }
