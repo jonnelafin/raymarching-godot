@@ -287,10 +287,11 @@ float traceRef3(vec3 ro, vec3 rd){
         float dS = GetDist(p);
         dO += dS;
 		last = p;
-        if(dO>MAX_DIST*100.0 || dS<SURF_DIST*1.0) break;
+		if(dO>MAX_DIST*100.0) return 0.0;
+        if(dS<SURF_DIST*1.0) return dO;
     }
     //return GetLight(last, vec3(0,0,0));
-    return 1.0-dO;
+    return 0.0;
 }
 float traceRef2(vec3 ro, vec3 rd){
 	float dO=0.;
