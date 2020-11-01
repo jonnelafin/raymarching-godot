@@ -120,7 +120,7 @@ float udQuad( vec3 p, vec3 a, vec3 b, vec3 c, vec3 d )
 
 float GetDist(vec3 p) {
     
-	vec4 s = vec4(0, 1, 6, 1);
+	vec4 s = vec4(0, 0, 0, 1);
     
     float sphereDist =  length(p-s.xyz)-s.w;
     float planeDist = p.y;
@@ -133,8 +133,9 @@ float GetDist(vec3 p) {
     
 	float d = 100000000000000.;
 	//d = min(d, planeDist);
-    d = min(d, cd);
+    //d = min(d, cd);
     //d = min(d, bd);
+	//d = min(d, sphereDist);
 	
 	//Items
 	int t_arr[5] = int[5] (item1_t, item2_t, item3_t, item4_t, item5_t); 
@@ -146,6 +147,10 @@ float GetDist(vec3 p) {
 		vec3 scale = scale_arr[i];
 		if(type == 1){
 			d = min(d, dBox(p-loc, scale));
+		}
+		if(type == 2){
+			vec4 sp = vec4(loc.x, loc.y, loc.z, ((scale.x + scale.y + scale.z)/3.0));
+			d = min(d, length(p-sp.xyz)-sp.w);
 		}
 	}
 	
@@ -402,12 +407,14 @@ void fragment()
 	float ref_dif = GetLight(ro +  sn*.003, lightPos);
 	float ref_dif2 = GetLight(ro +  sn*.003, lightPos2);
     vec3 ref_col = vec3(ref_dif + ref_dif2)*vec3(depthFilter);
-	ref_col = pow(ref_col, vec3(.4545));	// gamma correction
+//	ref_col = pow(ref_col, vec3(.4545));	// gamma correction
 	
-    col = pow(col, vec3(.4545));	// gamma correction
+//    col = pow(col, vec3(.4545));	// gamma correction
 	
-    col = ((col*1.0) + vec3(ref*1.0*ref_col)) / vec3(2);
+    col = ((col*1.0) + vec3(ref*10.0*ref_col)) / vec3(2.0);
     //col = vec3(depthFilter);
 //	col = ref_col;
+//	col = pow(col, vec3(.4545));	// gamma correction
+//	col = vec3(ref)*ref_col*vec3(10.0);
     COLOR = vec4(col,1.0);
 }
