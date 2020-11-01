@@ -287,11 +287,11 @@ float traceRef3(vec3 ro, vec3 rd){
         float dS = GetDist(p);
         dO += dS;
 		last = p;
-		if(dO>MAX_DIST*100.0) return 0.0;
-        if(dS<SURF_DIST*1.0) return dO;
+		if(dO>MAX_DIST*100.0) break;//return 0.0;
+        if(dS<SURF_DIST*1.0) break;//return dO;
     }
     //return GetLight(last, vec3(0,0,0));
-    return 0.0;
+    return DepthFilter(ro, rd);
 }
 float traceRef2(vec3 ro, vec3 rd){
 	float dO=0.;
@@ -377,7 +377,12 @@ void fragment()
     float d = RayMarch(ro, rd);
     float depthFilter = DepthFilter(ro, rd);
     vec3 sn = GetNormal(ro);
+	
+	vec3 pos = ro + d*rd;
+    vec3 nor = (resolution.y<1.5) ? vec3(0.0,1.0,0.0) : GetNormal( pos );
+    vec3 refz = reflect( rd, nor );
     
+	
 	
     vec3 lightPos = vec3(0, 5, 6);
 	vec3 lightPos2 = vec3(-10, 5, -6);
